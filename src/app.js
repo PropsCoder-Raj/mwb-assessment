@@ -26,6 +26,37 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(bodyParser.json()); // Parse JSON bodies
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
+// Custom middleware to log requests and responses
+app.use((req, res, next) => {
+    // Log incoming request details
+    const requestData = {
+        method: req.method,
+        url: req.originalUrl,
+        headers: req.headers,
+        body: req.body,
+    };
+    console.log('Incoming Request:', requestData);
+
+    // Capture the original response.send function
+    const originalSend = res.send;
+
+    // Override the response.send function to log the response details
+    res.send = function (body) {
+        // Log outgoing response details
+        const responseData = {
+            statusCode: res.statusCode,
+            body: body,
+        };
+        console.log('Outgoing Response:', responseData);
+
+        // Call the original response.send function
+        originalSend.call(this, body);
+    };
+
+    // Move to the next middleware in the chain
+    next();
+});
+
 const root = process.cwd();
 const port = process.env.PORT || 5000;
 
