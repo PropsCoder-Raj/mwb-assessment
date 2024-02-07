@@ -11,7 +11,7 @@ const userServices = {
     // Function to find a user by query
     findUser: async (query) => {
         // Find a user in the database based on the query, excluding the password field
-        return await userModel.findOne(query).select("-password");
+        return await userModel.findOne(query);
     },
 }
 

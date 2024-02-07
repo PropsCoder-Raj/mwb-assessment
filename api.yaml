@@ -37,3 +37,43 @@ definitions:
     example:
       email: "rohit@mailinator.com"
       password: "Rohit@5053"
+
+  task:
+    required:
+      - title
+      - description
+      - dueDate
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+        format: date  # Apply date format for dueDate
+    example:
+      title: "Task Title"
+      description: "Task Description"
+      dueDate: "2024-02-03"
+      
+  updateTask:
+    required:
+      - title
+      - description
+      - dueDate
+      - completed
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+        format: date  # Apply date format for dueDate
+      completed:
+        type: boolean
+    example:
+      title: "Task Title"
+      description: "Task Description"
+      dueDate: "2024-02-03"
+      completed: true

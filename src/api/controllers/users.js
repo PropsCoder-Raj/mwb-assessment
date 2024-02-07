@@ -102,6 +102,7 @@ exports.login = async (req, res, next) => {
 
         // Compare the provided password with the hashed password stored in the database
         const isPassword = await isUser.comparePassword(password)
+        console.log("isPassword: ", isPassword)
         if (!isPassword) {
             // Return error if password does not match
             return res.status(401).send({ status: false, message: "Password does not match." });
