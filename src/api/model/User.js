@@ -25,6 +25,11 @@ userSchema.pre('save', async function(next) {
   }
 });
 
+// Define the comparePassword method
+userSchema.methods.comparePassword = function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
 // Exclude password field when converting user document to JSON
 userSchema.methods.toJSON = function() {
   const userObject = this.toObject();
