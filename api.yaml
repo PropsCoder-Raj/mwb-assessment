@@ -73,7 +73,24 @@ definitions:
       completed:
         type: boolean
     example:
-      title: "Task Title"
+      title: "Task 1"
       description: "Task Description"
       dueDate: "2024-02-03"
       completed: true
+
+  taskTitle:
+    required:
+      - title
+    properties:
+      title:
+        type: string
+    example:
+      title: "Task 1"
+
+  taskTitles:
+    type: array
+    items:
+      type: string
+    example:
+      - "Task 1"
+      - "Task 2"

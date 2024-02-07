@@ -28,5 +28,11 @@ router.get('/get-completed-tasks-by-user', verifyToken, controller.getCompletedT
 // Define a route handler for GET requests to the '/get-tasks-by-user-due-in-next-7-days' endpoint
 router.get('/get-tasks-by-user-due-in-next-7-days', verifyToken, controller.getTasksByUserDueInNext7Days);
 
+// Define a route handler for POST requests to the '/get-specific-title-tasks-by-user' endpoint
+router.post('/get-specific-title-tasks-by-user', verifyToken, controller.getSpecificTitleTasksByUser);
+
+// Define a route handler for GET requests to the '/get-tasks-by-user-by-sorting' endpoint
+router.get('/get-tasks-by-user-by-sorting', verifyToken, controller.getTasksByUserBySortingDueDate);
+
 // Export the router instance to make it available for use in other parts of the application
 module.exports = router;

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 // Define the task schema using Mongoose Schema
 const taskSchema = new mongoose.Schema({
-    title: { type: String },
+    title: { type: String, required: true, unique: true },
     description: { type: String },
     dueDate: { type: Date },
     completed: { type: Boolean, default: false },
