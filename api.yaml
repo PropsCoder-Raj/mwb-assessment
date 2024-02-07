@@ -94,3 +94,37 @@ definitions:
     example:
       - "Task 1"
       - "Task 2"
+
+  updateUserTask:
+    required:
+      - name
+      - email
+      - profilePicture
+      - bio
+      - task_title
+      - task_description
+      - task_dueDate
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      profilePicture:
+        type: string
+      bio:
+        type: string
+      task_title:
+        type: string
+      task_description:
+        type: string
+      task_dueDate:
+        type: string
+        format: date
+    example:
+      name: "Rohit Pandit"
+      email: "rohit@mailinator.com"
+      profilePicture: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg"
+      bio: "Updated bio"
+      task_title: "Task 1"
+      task_description: "Task Description"
+      task_dueDate: "2024-02-03"

@@ -13,6 +13,10 @@ const userServices = {
         // Find a user in the database based on the query, excluding the password field
         return await userModel.findOne(query);
     },
+    // Function to update a task based on query
+    updateUser: async (query, updateObj) => {
+        return await userModel.findOneAndUpdate(query, updateObj, { new: true, upsert: true});
+    },
 }
 
 // Export the user services
