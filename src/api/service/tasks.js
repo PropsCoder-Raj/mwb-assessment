@@ -25,6 +25,9 @@ const taskServices = {
     taskSort: async (query, sortQuery) => {
         return await taskModel.find(query).sort(sortQuery);
     },
+    taskAggregate: async (pipeline) => {
+        return await taskModel.aggregate(pipeline);
+    },
 }
 
 module.exports = { taskServices };

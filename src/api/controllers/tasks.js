@@ -1,5 +1,7 @@
+const {Types: {ObjectId}} = require('mongoose');
+
 const { taskServices } = require("../service/tasks")
-const { createTask, findTask, updateTask, deleteTask, taskList, taskSort } = taskServices;
+const { createTask, findTask, updateTask, deleteTask, taskList, taskSort, taskAggregate } = taskServices;
 
 
 /**
@@ -372,6 +374,85 @@ exports.getTasksByUserBySortingDueDate = async (req, res, next) => {
 
         // Return successful response with tasks due in the next 7 days
         return res.status(200).send({ status: true, message: "Get Sorting Due Date Titles tasks successfully", result: taskResult });
+    } catch (error) {
+        // Return error response if an error occurs
+        return res.status(500).send({ status: false, message: error.message });
+    }
+}
+
+/**
+* @swagger
+* /tasks/get-tasks-by-user-pagination:
+*   get:
+*     summary: Get tasks by user
+*     tags:
+*       - Task Section
+*     description: Get tasks by user
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: token
+*         description: user token
+*         in: header
+*         required: true
+*       - name: page
+*         description: page
+*         in: query
+*         required: true
+*       - name: limit
+*         description: limit
+*         in: query
+*         required: true
+*     responses:
+*       '200':
+*         description: OK
+*       '401':
+*         description: Unauthorized
+*       '402':
+*         description: Bad Request
+*       '500':
+*         description: Internal Server Error
+*/
+exports.getTasksByUserPagination = async (req, res, next) => {
+    try {
+        // Pagination parameters
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        // Calculate skip value
+        const skip = (page - 1) * limit;
+        const userId = req.userId;
+
+        const pipeline = [
+            { $match: { userId: new ObjectId(userId) } },
+            { $facet: {
+                totalCount: [{ $group: { _id: null, count: { $sum: 1 } } }],
+                paginatedTasks: [
+                    { $skip: skip },
+                    { $limit: limit }
+                ]
+            }}
+        ];
+        
+        // Perform aggregation to calculate total count and fetch paginated tasks
+        const aggregationResult = await taskAggregate(pipeline)
+
+        // Extract total count and calculate total pages
+        const totalCount = aggregationResult[0].totalCount[0]?.count || 0;
+        const totalPages = Math.ceil(totalCount / limit);
+
+        // Extract paginated tasks
+        const tasks = aggregationResult[0].paginatedTasks;
+
+        const data = {
+            data: tasks,
+            page: page,
+            limit: limit,
+            totalPages: totalPages
+        }
+
+        // Return successful response with tasks due in the next 7 days
+        return res.status(200).send({ status: true, message: "Get tasks successfully with pagination apply.", result: data });
     } catch (error) {
         // Return error response if an error occurs
         return res.status(500).send({ status: false, message: error.message });

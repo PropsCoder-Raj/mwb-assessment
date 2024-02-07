@@ -34,5 +34,8 @@ router.post('/get-specific-title-tasks-by-user', verifyToken, controller.getSpec
 // Define a route handler for GET requests to the '/get-tasks-by-user-by-sorting' endpoint
 router.get('/get-tasks-by-user-by-sorting', verifyToken, controller.getTasksByUserBySortingDueDate);
 
+// Define a route handler for GET requests to the '/get-tasks-by-user-pagination' endpoint
+router.get('/get-tasks-by-user-pagination', verifyToken, controller.getTasksByUserPagination);
+
 // Export the router instance to make it available for use in other parts of the application
 module.exports = router;
