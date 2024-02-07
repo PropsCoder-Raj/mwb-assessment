@@ -2,7 +2,7 @@
 const express = require('express');
 
 // Import the users router module
-const users = require('./users');
+const users = require('./routes/users');
 
 // Create a new router instance
 const router = express.Router();

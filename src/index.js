@@ -1,3 +1,5 @@
+require("./api/config/db")
+
 // Import the Express application from app.js
 const app = require('./app');
 
