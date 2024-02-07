@@ -1,6 +1,9 @@
 // Import the Express framework
 const express = require('express');
 
+const { validateRequest } = require("../../middlewares")
+const { userSchema } = require("../helper/validationSchema")
+
 // Import the controller module for user operations
 const controller = require('../controllers/users');
 
@@ -8,10 +11,10 @@ const controller = require('../controllers/users');
 const router = express.Router();
 
 // Define a route handler for POST requests to the '/register' endpoint
-router.post('/register', controller.register);
+router.post('/register', validateRequest(userSchema), controller.register);
 
 // Define a route handler for POST requests to the '/login' endpoint
-router.post('/login', controller.login);
+router.post('/login', validateRequest(userSchema), controller.login);
 
 // Export the router instance to make it available for use in other parts of the application
 module.exports = router;

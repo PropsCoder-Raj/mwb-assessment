@@ -27,28 +27,32 @@ function errorHandler(err, req, res, next) {
 }
 
 async function verifyToken(req, res, next) {
+  // Extract the token from the request headers
   const { token } = req.headers;
 
+  // If token is not provided in the headers
   if (!token) {
     return res.status(404).send({ status: false, message: "User Token not found." });
   }
 
-  jwt.verify(req.headers.token, process.env.jwtsecret, async (err, result) => {
+  // Verify the JWT token
+  jwt.verify(token, process.env.jwtsecret, async (err, result) => {
+    // If there's an error in verification
     if (err) {
+      // If the error is due to token expiration
       if (err.name == "TokenExpiredError") {
         return res.status(440).send({
           responseCode: 440,
           responseMessage: "Session Expired, Please login again.",
         });
-      }
-      else {
+      } else {
         return res.status(401).send({
           responseCode: 401,
           responseMessage: "Unauthorized person.",
         });
       }
-    }
-    else {
+    } else {
+      // Check if the user exists in the database
       const isUser = await findUser({ _id: result.id, userType: userTypeEnums.USER });
       if (!isUser) {
         return res.status(404).json({
@@ -57,15 +61,29 @@ async function verifyToken(req, res, next) {
         })
       }
 
+      // Attach the user ID to the request object for future use
       req.userId = result.id;
       next();
     }
-  })
+  });
+}
+
+
+// Function for validating incoming requests against a given Joi schema
+function validateRequest(schema) {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ status: false, message: error.details[0].message });
+    }
+    next();
+  };
 }
 
 // Export the middleware functions for use in other parts of the application
 module.exports = {
   notFound,
   errorHandler,
-  verifyToken
+  verifyToken,
+  validateRequest
 };
