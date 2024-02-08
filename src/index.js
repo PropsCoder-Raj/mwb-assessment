@@ -1,4 +1,5 @@
 require("./api/config/db")
+require("./websocket")
 
 // Import the Express application from app.js
 const app = require('./app');
