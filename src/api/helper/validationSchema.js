@@ -77,6 +77,7 @@ const userTaskSchema = Joi.object({
       .message("Please provide a valid email address."),
     profilePicture: Joi.string().allow('').optional(),
     bio: Joi.string().allow('').optional(),
+    deviceToken: Joi.string().allow('').optional(),
     task_title: Joi.string().required().messages({
         'any.required': 'Title is required.',
         'string.empty': 'Title cannot be empty.'

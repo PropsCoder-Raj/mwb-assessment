@@ -113,6 +113,8 @@ definitions:
         type: string
       bio:
         type: string
+      deviceToken: 
+        type: string
       task_title:
         type: string
       task_description:
@@ -125,6 +127,7 @@ definitions:
       email: "rohit@mailinator.com"
       profilePicture: "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg"
       bio: "Updated bio"
+      deviceToken: ""
       task_title: "Task 1"
       task_description: "Task Description"
       task_dueDate: "2024-02-03"

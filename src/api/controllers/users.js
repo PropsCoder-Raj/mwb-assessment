@@ -161,7 +161,7 @@ exports.updateUserAndAddTask = async (req, res, next) => {
     try {
         session.startTransaction();
 
-        let { email, name, profilePicture, bio, task_title, task_description, task_dueDate } = req.body;
+        let { email, name, profilePicture, bio, deviceToken, task_title, task_description, task_dueDate } = req.body;
 
         // If profile picture is provided, upload it to Cloudinary
         if (profilePicture) {
@@ -169,10 +169,22 @@ exports.updateUserAndAddTask = async (req, res, next) => {
         }
 
         // Update user details
-        await updateUser(req.userId, { email, name, profilePicture, bio }, { session });
+        await updateUser({ _id: res.userId }, { email, name, profilePicture, bio, deviceToken }, { session });
 
         // Create a new task
         await createTask({ title: task_title, description: task_description, dueDate: task_dueDate }, { session });
+
+        const userResult = await findUser({ _id: res.userId });
+        if(userResult.deviceToken){
+            const message = {
+                notification: {
+                    title: 'Task Updated',
+                    body: `A task has been updated: ${req.body.title}`,
+                },                
+                token: userResult.deviceToken, // User's FCM token retrieved during authentication
+            };
+            commonFunctions.sendMessage(message);
+        }
 
         // Commit the transaction
         await session.commitTransaction();

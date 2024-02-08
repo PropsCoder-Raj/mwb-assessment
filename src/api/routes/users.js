@@ -4,6 +4,9 @@ const express = require('express');
 const { validateRequest } = require("../../middlewares")
 const { userSchema, userTaskSchema } = require("../helper/validationSchema")
 
+// Import middleware for token verification
+const { verifyToken } = require("../../middlewares");
+
 // Import the controller module for user operations
 const controller = require('../controllers/users');
 
@@ -17,7 +20,7 @@ router.post('/register', validateRequest(userSchema), controller.register);
 router.post('/login', validateRequest(userSchema), controller.login);
 
 // Define a route handler for PUT requests to the '/update-user-and-add-task' endpoint
-router.put('/update-user-and-add-task', validateRequest(userTaskSchema), controller.updateUserAndAddTask);
+router.put('/update-user-and-add-task', verifyToken, validateRequest(userTaskSchema), controller.updateUserAndAddTask);
 
 // Export the router instance to make it available for use in other parts of the application
 module.exports = router;

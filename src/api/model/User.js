@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String },
   profilePicture: { type: String },
   bio: { type: String },
+  deviceToken: { type: String },
   userType: { type: String, enum: [userTypeEnums.USER, userTypeEnums.USER], default: userTypeEnums.USER},
 }, { timestamps: true });
 

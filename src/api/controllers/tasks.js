@@ -1,7 +1,12 @@
 const {Types: {ObjectId}} = require('mongoose');
 
+const commonFunctions = require('../helper/utils');
+
 const { taskServices } = require("../service/tasks")
 const { createTask, findTask, updateTask, deleteTask, taskList, taskSort, taskAggregate } = taskServices;
+
+const { userServices } = require("../service/users")
+const { findUser } = userServices;
 
 
 /**
@@ -39,6 +44,18 @@ exports.createTask = async (req, res, next) => {
     try {
         // Create a new task with the provided data and associate it with the logged-in user
         const taskResult = await createTask({ ...req.body, userId: req.userId });
+
+        const userResult = await findUser({ _id: res.userId });
+        if(userResult.deviceToken){
+            const message = {
+                notification: {
+                    title: 'New Task Assigned',
+                    body: `You have a new task assigned: ${req.body.title}`,
+                },
+                token: userResult.deviceToken, // User's FCM token retrieved during authentication
+            };
+            commonFunctions.sendMessage(message);
+        }
         
         // Return successful response with details of the created task
         return res.status(201).send({ status: true, message: "Created Task Successfully", result: taskResult });
@@ -136,6 +153,19 @@ exports.updateTask = async (req, res, next) => {
 
         // Update the task with the provided data
         const taskResult = await updateTask({ _id: isTask._id }, { $set: req.body });
+
+        
+        const userResult = await findUser({ _id: res.userId });
+        if(userResult.deviceToken){
+            const message = {
+                notification: {
+                    title: 'Task Updated',
+                    body: `A task has been updated: ${req.body.title}`,
+                },                
+                token: userResult.deviceToken, // User's FCM token retrieved during authentication
+            };
+            commonFunctions.sendMessage(message);
+        }
 
         // Return successful response with updated task details
         return res.status(200).send({ status: true, message: "Updated Task Successfully", result: taskResult });

@@ -1,6 +1,15 @@
 // Load environment variables from .env file
 require("dotenv").config();
 
+const admin = require('firebase-admin');
+
+// put here your service account configuration
+const serviceAccount = require('../config/serviceAccountKey.json');
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+});
+
 // Import necessary modules
 var jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
@@ -22,4 +31,14 @@ exports.uploadImageCloudnary = async (base64) => {
 
     // Upload base64 image to Cloudinary and return the secure URL
     return (await cloudinary.uploader.upload(base64, { resource_type: "auto" })).secure_url
+}
+
+exports.sendMessage = (message) => {
+    admin.messaging().send(message)
+        .then((response) => {
+            console.log('Successfully sent message:', response);
+        })
+        .catch((error) => {
+            console.log('Error sending message:', error);
+        });
 }
