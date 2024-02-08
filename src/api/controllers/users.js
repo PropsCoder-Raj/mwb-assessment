@@ -50,7 +50,7 @@ exports.register = async (req, res, next) => {
 
         // If profile picture is provided, upload it to Cloudinary
         if (profilePicture) {
-            req.body.profilePicture = await commonFunction.uploadImageCloudnary(profilePicture);
+            req.body.profilePicture = await commonFunction.uploadImageCloudinary(profilePicture);
         }
 
         // Create the user in the database
@@ -168,13 +168,21 @@ exports.updateUserAndAddTask = async (req, res, next) => {
             profilePicture = await commonFunction.uploadImageCloudinary(profilePicture);
         }
 
+        console.log("req.userId: ", req.userId)
+
         // Update user details
-        await updateUser({ _id: res.userId }, { email, name, profilePicture, bio, deviceToken }, { session });
+        await updateUser({ _id: req.userId }, { $set: { 
+            email: email, 
+            name: name, 
+            profilePicture: profilePicture, 
+            bio: bio, 
+            deviceToken: deviceToken 
+        }}, { session });
 
         // Create a new task
-        await createTask({ title: task_title, description: task_description, dueDate: task_dueDate }, { session });
+        await createTask({ title: task_title, description: task_description, dueDate: task_dueDate, userId: req.userId }, { session });
 
-        const userResult = await findUser({ _id: res.userId });
+        const userResult = await findUser({ _id: req.userId });
         if(userResult.deviceToken){
             const message = {
                 notification: {
@@ -183,7 +191,7 @@ exports.updateUserAndAddTask = async (req, res, next) => {
                 },                
                 token: userResult.deviceToken, // User's FCM token retrieved during authentication
             };
-            commonFunctions.sendMessage(message);
+            commonFunction.sendMessage(message);
         }
 
         // Commit the transaction

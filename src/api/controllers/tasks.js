@@ -1,6 +1,6 @@
 const {Types: {ObjectId}} = require('mongoose');
 
-const commonFunctions = require('../helper/utils');
+const commonFunction = require('../helper/utils');
 
 const { taskServices } = require("../service/tasks")
 const { createTask, findTask, updateTask, deleteTask, taskList, taskSort, taskAggregate } = taskServices;
@@ -54,7 +54,7 @@ exports.createTask = async (req, res, next) => {
                 },
                 token: userResult.deviceToken, // User's FCM token retrieved during authentication
             };
-            commonFunctions.sendMessage(message);
+            commonFunction.sendMessage(message);
         }
         
         // Return successful response with details of the created task
@@ -164,7 +164,7 @@ exports.updateTask = async (req, res, next) => {
                 },                
                 token: userResult.deviceToken, // User's FCM token retrieved during authentication
             };
-            commonFunctions.sendMessage(message);
+            commonFunction.sendMessage(message);
         }
 
         // Return successful response with updated task details
